@@ -1,3 +1,4 @@
+import { ConfigService } from '@app/common/config/configService';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -16,7 +17,7 @@ class Application {
   private swagger() {
     this.server.enableCors({
       origin: '*',
-      methods: 'GET',
+      methods: 'GET,POST,PUT,PATCH,DELETE',
       optionsSuccessStatus: 200,
     });
     const options = new DocumentBuilder()
@@ -30,14 +31,16 @@ class Application {
 
   async bootstrap() {
     await this.swagger();
-    await this.server.listen(8080);
+    await this.server.listen(ConfigService.appPort());
   }
 
   startLog() {
     if (this.DEV_MODE) {
-      this.logger.log(`✅ Dev Server on http://localhost:${8080}`);
+      this.logger.log(
+        `✅ Dev Server on http://localhost:${ConfigService.appPort()}`,
+      );
     } else {
-      this.logger.log(`✅ Prod Server on port ${8080}`);
+      this.logger.log(`✅ Prod Server on port ${ConfigService.appPort()}`);
     }
   }
 }
