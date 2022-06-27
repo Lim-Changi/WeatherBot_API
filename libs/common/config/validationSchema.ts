@@ -8,4 +8,5 @@ export const ValidationSchema = Joi.object({
   FORECAST_ENDPOINT: Joi.string().required(),
   HISTORICAL_ENDPOINT: Joi.string().required(),
   API_KEY: Joi.string().required(),
+  REQUEST_TIMEOUT_LIMIT: Joi.string().required(),
 });

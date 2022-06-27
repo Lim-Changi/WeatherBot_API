@@ -11,7 +11,7 @@ import { ValidationError } from 'class-validator';
 import { CustomValidationError } from './CustomValidationError';
 import { ResponseEntity } from '../response/ResponseEntity';
 
-@Catch()
+@Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost): any {
     const ctx = host.switchToHttp();
