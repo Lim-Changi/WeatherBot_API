@@ -1,4 +1,5 @@
 import { ValidationSchema } from '@app/common/config/validationSchema';
+import { LoggingModule } from '@app/common/logging/logging.module';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -13,6 +14,7 @@ import { HealthCheckController } from './HealthCheck/HealthCheckController';
     }),
     HttpModule,
     TerminusModule,
+    LoggingModule,
   ],
   controllers: [HealthCheckController],
   providers: [],
