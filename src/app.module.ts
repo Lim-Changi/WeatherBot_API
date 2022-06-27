@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TerminusModule } from '@nestjs/terminus';
 import { HealthCheckController } from './HealthCheck/HealthCheckController';
+import { WeatherModule } from './Weather/weather.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { HealthCheckController } from './HealthCheck/HealthCheckController';
     HttpModule,
     TerminusModule,
     LoggingModule,
+    WeatherModule,
   ],
   controllers: [HealthCheckController],
   providers: [],
