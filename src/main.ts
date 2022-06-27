@@ -1,9 +1,10 @@
-import { ConfigService } from '@app/common/config/configService';
+import { ConfigService } from 'libs/entity/config/configService';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { SetGlobalMiddleware } from '@app/common/SetGlobalMiddleware';
 
 class Application {
   private logger = new Logger(Application.name);
@@ -30,6 +31,7 @@ class Application {
   }
 
   async bootstrap() {
+    SetGlobalMiddleware(this.server);
     await this.swagger();
     await this.server.listen(ConfigService.appPort());
   }

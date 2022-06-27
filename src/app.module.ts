@@ -1,6 +1,9 @@
 import { ValidationSchema } from '@app/common/config/validationSchema';
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { TerminusModule } from '@nestjs/terminus';
+import { HealthCheckController } from './HealthCheck/HealthCheckController';
 
 @Module({
   imports: [
@@ -8,8 +11,10 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       validationSchema: ValidationSchema,
     }),
+    HttpModule,
+    TerminusModule,
   ],
-  controllers: [],
+  controllers: [HealthCheckController],
   providers: [],
 })
 export class AppModule {}
