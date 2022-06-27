@@ -50,14 +50,19 @@ export class WeatherController {
     @Query() param: GetWeatherSummaryReq,
   ): Promise<GetWeatherSummaryRes> {
     try {
-      const weatherEntity = param.toEntity();
+      const weatherEntity = param.toWeatherEntity();
+      await this.weatherService.setGreetingMessage(weatherEntity);
       return ResponseEntity.ONLY_DATA(new GetWeatherSummaryRes(weatherEntity));
     } catch (e) {
-      throw ResponseEntity.ERROR_WITH_DATA(
-        '날씨 조회 로직이 실패했습니다.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        e,
-      );
+      if (e instanceof Error) {
+        throw ResponseEntity.ERROR_WITH_DATA(
+          '날씨 조회 로직이 실패했습니다.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          e,
+        );
+      }
+
+      throw e;
     }
   }
 }

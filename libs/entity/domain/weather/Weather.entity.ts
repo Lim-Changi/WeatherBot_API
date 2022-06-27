@@ -10,7 +10,7 @@ export class Weather {
   static location(lat: string, lon: string) {
     const weather = new Weather();
     weather.lat = lat;
-    weather.lat = lon;
+    weather.lon = lon;
 
     return weather;
   }

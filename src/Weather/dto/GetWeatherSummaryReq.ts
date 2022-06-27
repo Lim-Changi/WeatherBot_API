@@ -28,7 +28,7 @@ export class GetWeatherSummaryReq {
   @IsLongitude()
   lon: string;
 
-  toEntity(): Weather {
+  toWeatherEntity(): Weather {
     return Weather.location(this.lat, this.lon);
   }
 }
