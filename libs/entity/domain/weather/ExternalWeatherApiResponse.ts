@@ -1,24 +1,17 @@
-export interface CurrentWeatherApiResponse {
+export interface WeatherApiResponse {
   timestamp: number;
   code: WeatherCode;
   temp: number;
   rain1h: number;
 }
 
-export interface ForecastWeatherApiResponse {
+export interface ForecastApiResponse {
   timestamp: number;
   code: WeatherCode;
   temp: number;
   min_temp: number;
   max_temp: number;
   rain: number;
-}
-
-export interface HistoricalWeatherApiResponse {
-  timestamp: number;
-  code: WeatherCode;
-  temp: number;
-  rain1h: number;
 }
 
 export const WeatherCode = {

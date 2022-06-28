@@ -19,7 +19,7 @@ export const TemperatureType = {
   4: '어제와 비슷하게 덥습니다. ',
   5: '어제와 비슷하게 춥습니다. ',
   6: '최고기온은 n도, ',
-  7: '최저기온은 n도 입니다. ',
+  7: '최저기온은 n도 입니다.',
 } as const;
 
 export type TemperatureType =
