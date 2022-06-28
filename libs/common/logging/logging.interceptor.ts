@@ -11,7 +11,9 @@ import { tap } from 'rxjs/operators';
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   constructor(private logger: Logger) {
-    this.logger = new Logger('HttpRequest');
+    this.logger = new Logger('HttpRequest', {
+      timestamp: true,
+    });
   }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {

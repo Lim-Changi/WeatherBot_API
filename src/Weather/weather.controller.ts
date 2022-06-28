@@ -51,7 +51,7 @@ export class WeatherController {
   ): Promise<GetWeatherSummaryRes> {
     try {
       const weatherEntity = param.toWeatherEntity();
-      await this.weatherService.setGreetingMessage(weatherEntity);
+      await this.weatherService.setHeadsUpMessage(weatherEntity);
       return ResponseEntity.ONLY_DATA(new GetWeatherSummaryRes(weatherEntity));
     } catch (e) {
       if (e instanceof Error) {
