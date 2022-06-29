@@ -69,6 +69,7 @@ export class WeatherService {
         historicalWeather,
       );
 
+      console.log(historicalWeatherInfo);
       // 기획
       let temperatureCompareMessage: string = null;
       const currentWeather = historicalWeatherInfo[0];
@@ -109,13 +110,9 @@ export class WeatherService {
       } else {
         // 온도가 같음
         if (currentWeather.temp >= 15) {
-          temperatureCompareMessage = this.parseTemperatureMessage(
-            TemperatureType[4],
-          );
+          temperatureCompareMessage = TemperatureType[4];
         } else {
-          temperatureCompareMessage = this.parseTemperatureMessage(
-            TemperatureType[5],
-          );
+          temperatureCompareMessage = TemperatureType[5];
         }
       }
 
@@ -192,7 +189,6 @@ export class WeatherService {
     temperatureMessage: TemperatureType,
     targetTemperature?: number,
   ): string {
-    if (!targetTemperature) return temperatureMessage;
     let temperature: number = targetTemperature;
     if (
       temperatureMessage !== TemperatureType[6] &&
