@@ -1,17 +1,10 @@
-import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
+import { WeatherInfoModule } from './adapter/weatherInfo.module';
 import { WeatherController } from './weather.controller';
 import { WeatherService } from './weather.service';
 
 @Module({
-  imports: [
-    HttpModule.registerAsync({
-      useFactory: () => ({
-        timeout: 1000,
-        maxRedirects: 1,
-      }),
-    }),
-  ],
+  imports: [WeatherInfoModule],
   controllers: [WeatherController],
   providers: [WeatherService],
   exports: [WeatherService],

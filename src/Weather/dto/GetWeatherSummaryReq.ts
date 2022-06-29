@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
-import { Weather } from 'libs/entity/domain/weather/weather.entity';
+import { Weather } from '@app/entity/domain/weather/weather.entity';
 
 export class GetWeatherSummaryReq {
   @ApiProperty({
