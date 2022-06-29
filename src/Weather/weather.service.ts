@@ -203,22 +203,13 @@ export class WeatherService {
     for (let i = 0; i < days; i++) {
       const dailyForecast = [];
       for (let j = 1; j <= 4; j++) {
-        dailyForecast.push(() =>
-          this.getForecastWeather(weather, (4 * i + j) * 6),
-        );
+        dailyForecast.push(this.getForecastWeather(weather, (4 * i + j) * 6));
       }
       allForecast.push(dailyForecast);
     }
 
     const forecastInfo: ForecastApiResponse[][] = await Promise.all(
-      allForecast.map(
-        async (data) =>
-          await Promise.all(
-            data.map((func) => {
-              return func();
-            }),
-          ),
-      ),
+      allForecast.map(async (data) => await Promise.all(data)),
     );
     let headsUpMessage: HeadsUpType = null;
 
