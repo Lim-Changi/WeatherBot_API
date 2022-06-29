@@ -24,6 +24,8 @@
       "@app/entity/*": [
         "libs/entity/*"
       ],
+      "@test/*": ["./__test__/*"],
+      "@tools/*": ["./__test__/tools/*"]
   }
   }
   
