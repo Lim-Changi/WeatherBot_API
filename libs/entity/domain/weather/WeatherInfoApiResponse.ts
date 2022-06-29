@@ -8,7 +8,6 @@ export interface WeatherApiResponse {
 export interface ForecastApiResponse {
   timestamp: number;
   code: WeatherCode;
-  temp: number;
   min_temp: number;
   max_temp: number;
   rain: number;
