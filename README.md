@@ -30,5 +30,6 @@ REQUEST_TIMEOUT_LIMIT=1500
    2. Postman
       * `GET` `localhost:8080/summary?lat=&lon=`
       * `lat` `lon` Query Param 에 위도 경도 값 기입 후, 테스트
+7. Test Code 실행 `npm run test`
 
 > 평균 650~750ms 응답속도 반환
