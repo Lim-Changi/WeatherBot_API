@@ -1,6 +1,6 @@
 # WeatherBot API
 
-## Framework
+### Framework
 * NestJS
 ### 실행 환경
 * Nest v8.1.8
@@ -26,9 +26,9 @@ REQUEST_TIMEOUT_LIMIT=1500
 5. `npm run start:prod`
 6. 날씨 API 테스트
    1. Swagger API Docs: [localhost:8080/docs]()
-   * 날씨 API `GET  /summary ` API 테스트
+      * 날씨 API `GET  /summary ` API 테스트
    2. Postman
-   * `GET` `localhost:8080/summary?lat=&lon=`
-   * `lat` `lon` Query Param 에 위도 경도 값 기입 후, 테스트
+      * `GET` `localhost:8080/summary?lat=&lon=`
+      * `lat` `lon` Query Param 에 위도 경도 값 기입 후, 테스트
 
 > 평균 650~750ms 응답속도 반환
