@@ -4,7 +4,7 @@ import {
   WeatherApiResponse,
   WeatherCode,
 } from '@app/entity/domain/weather/WeatherInfoApiResponse';
-import { Weather } from '@app/entity/domain/weather/weather.entity';
+import { Weather } from '@app/entity/domain/weather/Weather.entity';
 import {
   GreetingType,
   HeadsUpType,

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { Weather } from '@app/entity/domain/weather/weather.entity';
+import { Weather } from '@app/entity/domain/weather/Weather.entity';
 import {
   GreetingType,
   HeadsUpType,

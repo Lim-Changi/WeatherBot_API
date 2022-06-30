@@ -4,7 +4,7 @@ import {
   ForecastApiResponse,
   WeatherApiResponse,
 } from '@app/entity/domain/weather/WeatherInfoApiResponse';
-import { Weather } from '@app/entity/domain/weather/weather.entity';
+import { Weather } from '@app/entity/domain/weather/Weather.entity';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
 import { ResponseEntity } from '@app/common/response/ResponseEntity';

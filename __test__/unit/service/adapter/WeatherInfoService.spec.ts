@@ -1,4 +1,4 @@
-import { Weather } from '@app/entity/domain/weather/weather.entity';
+import { Weather } from '@app/entity/domain/weather/Weather.entity';
 import { HttpService } from '@nestjs/axios';
 import { generateRandomLatLon } from '@test/tools/ci-tools';
 import { WeatherInfoService } from '../../../../src/Weather/adapter/weatherInfo.service';

@@ -1,4 +1,4 @@
-import { Weather } from '@app/entity/domain/weather/weather.entity';
+import { Weather } from '@app/entity/domain/weather/Weather.entity';
 import { generateRandomLatLon } from '@test/tools/ci-tools';
 
 describe('Weather Entity', () => {
