@@ -27,7 +27,7 @@ describe('Weather Service', () => {
     testRain = generateRandomRain();
   });
 
-  describe('현재 날씨 정보, Greeting Message', () => {
+  describe.skip('현재 날씨 정보, Greeting Message', () => {
     it('현재 날씨가 눈, 강수량이 100mm 이상 => 폭설이 내리고 있어요', async () => {
       testWeatherInfoService.setTestWeatherInfo(
         WeatherCode.snow,
@@ -102,8 +102,158 @@ describe('Weather Service', () => {
     });
   });
 
-  describe('Temperature Message', () => {
-    it.todo('날씨 서비스 기능 테스트');
+  describe('비교 날씨 정보, Temperature Message', () => {
+    it('온도 n도 하락, 현재 온도 15도 이상 => 어제보다 n도 덜 덥습니다.', async () => {
+      const currentTemp = 30;
+      const tempDifference = 15;
+      testWeatherInfoService.setTestWeatherInfo(
+        testWeatherCode,
+        currentTemp,
+        testRain,
+      );
+      testWeatherInfoService.setTestHistoricalWeatherInfo(
+        testWeatherCode,
+        currentTemp + tempDifference,
+        testRain,
+      );
+      await testWeatherService.setWeatherMessage(testWeather);
+      expect(testWeather.summary().temperature).toContain(
+        `어제보다 ${tempDifference}도 덜 덥습니다.`,
+      );
+    });
+
+    it('온도 n도 하락, 현재 온도 15도 미만 => 어제보다 n도 더 춥습니다.', async () => {
+      const currentTemp = 5;
+      const tempDifference = 15;
+      testWeatherInfoService.setTestWeatherInfo(
+        testWeatherCode,
+        currentTemp,
+        testRain,
+      );
+      testWeatherInfoService.setTestHistoricalWeatherInfo(
+        testWeatherCode,
+        currentTemp + tempDifference,
+        testRain,
+      );
+      await testWeatherService.setWeatherMessage(testWeather);
+      expect(testWeather.summary().temperature).toContain(
+        `어제보다 ${tempDifference}도 더 춥습니다.`,
+      );
+    });
+
+    it('온도 n도 상승, 현재 온도 15도 이상 => 어제보다 n도 더 덥습니다.', async () => {
+      const currentTemp = 30;
+      const tempDifference = 15;
+      testWeatherInfoService.setTestWeatherInfo(
+        testWeatherCode,
+        currentTemp,
+        testRain,
+      );
+      testWeatherInfoService.setTestHistoricalWeatherInfo(
+        testWeatherCode,
+        currentTemp - tempDifference,
+        testRain,
+      );
+      await testWeatherService.setWeatherMessage(testWeather);
+      expect(testWeather.summary().temperature).toContain(
+        `어제보다 ${tempDifference}도 더 덥습니다.`,
+      );
+    });
+
+    it('온도 n도 상승, 현재 온도 15도 미만 => 어제보다 n도 덜 춥습니다.', async () => {
+      const currentTemp = 5;
+      const tempDifference = 15;
+      testWeatherInfoService.setTestWeatherInfo(
+        testWeatherCode,
+        currentTemp,
+        testRain,
+      );
+      testWeatherInfoService.setTestHistoricalWeatherInfo(
+        testWeatherCode,
+        currentTemp - tempDifference,
+        testRain,
+      );
+      await testWeatherService.setWeatherMessage(testWeather);
+      expect(testWeather.summary().temperature).toContain(
+        `어제보다 ${tempDifference}도 덜 춥습니다.`,
+      );
+    });
+
+    it('온도 동일, 현재 온도 15도 이상 => 어제와 비슷하게 덥습니다.', async () => {
+      const currentTemp = 30;
+      const tempDifference = 0;
+      testWeatherInfoService.setTestWeatherInfo(
+        testWeatherCode,
+        currentTemp,
+        testRain,
+      );
+      testWeatherInfoService.setTestHistoricalWeatherInfo(
+        testWeatherCode,
+        currentTemp + tempDifference,
+        testRain,
+      );
+      await testWeatherService.setWeatherMessage(testWeather);
+      expect(testWeather.summary().temperature).toContain(
+        `어제와 비슷하게 덥습니다.`,
+      );
+    });
+
+    it('온도 동일, 현재 온도 15도 미만 => 어제와 비슷하게 춥습니다.', async () => {
+      const currentTemp = 5;
+      const tempDifference = 0;
+      testWeatherInfoService.setTestWeatherInfo(
+        testWeatherCode,
+        currentTemp,
+        testRain,
+      );
+      testWeatherInfoService.setTestHistoricalWeatherInfo(
+        testWeatherCode,
+        currentTemp + tempDifference,
+        testRain,
+      );
+      await testWeatherService.setWeatherMessage(testWeather);
+      expect(testWeather.summary().temperature).toContain(
+        `어제와 비슷하게 춥습니다.`,
+      );
+    });
+
+    it('측정치 중 가장 높은 온도 n => 최고기온은 n도,', async () => {
+      const maxTemp = 100;
+      const minTemp = 0;
+      testWeatherInfoService.setTestWeatherInfo(
+        testWeatherCode,
+        maxTemp,
+        testRain,
+      );
+      testWeatherInfoService.setTestHistoricalWeatherInfo(
+        testWeatherCode,
+        minTemp,
+        testRain,
+      );
+      await testWeatherService.setWeatherMessage(testWeather);
+      expect(testWeather.summary().temperature).toContain(
+        `최고기온은 ${maxTemp}도,`,
+      );
+    });
+
+    it('측정치 중 가장 낮은 온도 n => 최저기온은 n도 입니다.', async () => {
+      const maxTemp = 100;
+      const minTemp = 0;
+      testWeatherInfoService.setTestWeatherInfo(
+        testWeatherCode,
+        maxTemp,
+        testRain,
+      );
+      testWeatherInfoService.setTestHistoricalWeatherInfo(
+        testWeatherCode,
+        minTemp,
+        testRain,
+      );
+      await testWeatherService.setWeatherMessage(testWeather);
+      expect(testWeather.summary().temperature).toContain(
+        `최저기온은 ${minTemp}도 입니다.`,
+      );
+    });
   });
 
   describe('Forecast Message', () => {

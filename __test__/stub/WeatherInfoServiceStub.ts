@@ -11,6 +11,9 @@ export class WeatherInfoServiceStub extends WeatherInfoService {
   private code: WeatherCode;
   private temp: number;
   private rain1h: number;
+  private historicalCode: WeatherCode;
+  private historicalTemp: number;
+  private historicalRain1h: number;
   private minTemp: number;
   private maxTemp: number;
   private rainPercentage: number;
@@ -23,6 +26,16 @@ export class WeatherInfoServiceStub extends WeatherInfoService {
     this.code = code;
     this.temp = temp;
     this.rain1h = rain1h;
+  }
+
+  setTestHistoricalWeatherInfo(
+    code: WeatherCode,
+    temp: number,
+    rain1h: number,
+  ): void {
+    this.historicalCode = code;
+    this.historicalTemp = temp;
+    this.historicalRain1h = rain1h;
   }
 
   setTestForecastInfo(
@@ -48,13 +61,13 @@ export class WeatherInfoServiceStub extends WeatherInfoService {
 
   async getHistoricalWeather(
     _weather: Weather,
-    _hourOffset: number,
+    hourOffset: number,
   ): Promise<WeatherApiResponse> {
     return {
-      timestamp: new Date().getTime(),
-      code: this.code,
-      temp: this.temp,
-      rain1h: this.rain1h,
+      timestamp: new Date().getTime() - 60 * 60 * 1000 * hourOffset,
+      code: this.historicalCode,
+      temp: this.historicalTemp,
+      rain1h: this.historicalRain1h,
     };
   }
 
