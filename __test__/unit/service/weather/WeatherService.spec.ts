@@ -1,10 +1,14 @@
 import { Weather } from '@app/entity/domain/weather/weather.entity';
-import { GreetingType } from '@app/entity/domain/weather/WeatherMessageType';
+import {
+  GreetingType,
+  HeadsUpType,
+} from '@app/entity/domain/weather/WeatherMessageType';
 import { HttpService } from '@nestjs/axios';
 import { WeatherInfoServiceStub } from '@test/stub/WeatherInfoServiceStub';
 import {
   generateRandomLatLon,
   generateRandomRain,
+  generateRandomRainPercentage,
   generateRandomTemp,
   generateRandomWeatherCode,
 } from '@test/tools/ci-tools';
@@ -18,6 +22,9 @@ describe('Weather Service', () => {
   let testWeatherCode: WeatherCode;
   let testTemperature: number;
   let testRain: number;
+  let testMinTemperature: number;
+  let testMaxTemperature: number;
+  let testRainPercentage: number;
 
   beforeEach(() => {
     const { lat, lon } = generateRandomLatLon();
@@ -25,9 +32,12 @@ describe('Weather Service', () => {
     testWeatherCode = generateRandomWeatherCode();
     testTemperature = generateRandomTemp();
     testRain = generateRandomRain();
+    testMinTemperature = generateRandomTemp();
+    testMaxTemperature = testMinTemperature + 10;
+    testRainPercentage = generateRandomRainPercentage();
   });
 
-  describe.skip('현재 날씨 정보, Greeting Message', () => {
+  describe('현재 날씨 정보, Greeting Message', () => {
     it('현재 날씨가 눈, 강수량이 100mm 이상 => 폭설이 내리고 있어요', async () => {
       testWeatherInfoService.setTestWeatherInfo(
         WeatherCode.snow,
@@ -256,7 +266,131 @@ describe('Weather Service', () => {
     });
   });
 
-  describe('Forecast Message', () => {
-    it.todo('날씨 서비스 기능 테스트');
+  describe('날씨 예보, Forecast Message', () => {
+    it('앞으로 24시간 내에 눈이 내릴 것으로 예측되는 경우가 12시간 이상 => 내일 폭설이 내릴 수도 있으니 외출 시 주의하세요.', async () => {
+      const days = 2;
+      for (let i = 1; i <= days * 4; i++) {
+        testWeatherInfoService.setTestForecastInfo(
+          WeatherCode.snow,
+          testMinTemperature,
+          testMaxTemperature,
+          testRainPercentage,
+          6 * i,
+        );
+      }
+
+      await testWeatherService.setForecastMessage(testWeather, days);
+      expect(testWeather.summary().headsUp).toBe(HeadsUpType[0]);
+    });
+
+    it('앞으로 24시간 내에는 아니지만 48시간 내에 눈이 내릴 것으로 예측되는 경우가 12시간 이상 => 눈이 내릴 예정이니 외출 시 주의하세요.', async () => {
+      for (let i = 1; i <= 4; i++) {
+        testWeatherInfoService.setTestForecastInfo(
+          WeatherCode.sunny,
+          testMinTemperature,
+          testMaxTemperature,
+          testRainPercentage,
+          6 * i,
+        );
+      }
+      for (let i = 5; i <= 8; i++) {
+        testWeatherInfoService.setTestForecastInfo(
+          WeatherCode.snow,
+          testMinTemperature,
+          testMaxTemperature,
+          testRainPercentage,
+          6 * i,
+        );
+      }
+
+      await testWeatherService.setForecastMessage(testWeather);
+      expect(testWeather.summary().headsUp).toBe(HeadsUpType[1]);
+    });
+
+    it('앞으로 24시간 내에 비가 내릴 것으로 예측되는 경우가 12시간 이상 => 폭우가 내릴 예정이에요. 우산을 미리 챙겨두세요.', async () => {
+      const days = 2;
+      for (let i = 1; i <= days * 4; i++) {
+        testWeatherInfoService.setTestForecastInfo(
+          WeatherCode.rain,
+          testMinTemperature,
+          testMaxTemperature,
+          testRainPercentage,
+          6 * i,
+        );
+      }
+
+      await testWeatherService.setForecastMessage(testWeather, days);
+      expect(testWeather.summary().headsUp).toBe(HeadsUpType[2]);
+    });
+
+    it('앞으로 24시간 내에는 아니지만 48시간 내에 비가 내릴 것으로 예측되는 경우가 12시간 이상 => 눈이 내릴 예정이니 외출 시 주의하세요.', async () => {
+      for (let i = 1; i <= 4; i++) {
+        testWeatherInfoService.setTestForecastInfo(
+          WeatherCode.sunny,
+          testMinTemperature,
+          testMaxTemperature,
+          testRainPercentage,
+          6 * i,
+        );
+      }
+      for (let i = 5; i <= 8; i++) {
+        testWeatherInfoService.setTestForecastInfo(
+          WeatherCode.rain,
+          testMinTemperature,
+          testMaxTemperature,
+          testRainPercentage,
+          6 * i,
+        );
+      }
+
+      await testWeatherService.setForecastMessage(testWeather);
+      expect(testWeather.summary().headsUp).toBe(HeadsUpType[3]);
+    });
+
+    it('앞으로 48 시간내에 비가 내릴 것으로 예측되는 경우가 6시간 이하 => 날씨는 대체로 평온할 예정이에요.', async () => {
+      testWeatherInfoService.setTestForecastInfo(
+        WeatherCode.rain,
+        testMinTemperature,
+        testMaxTemperature,
+        testRainPercentage,
+        6,
+      );
+
+      for (let i = 2; i <= 8; i++) {
+        testWeatherInfoService.setTestForecastInfo(
+          WeatherCode.sunny,
+          testMinTemperature,
+          testMaxTemperature,
+          testRainPercentage,
+          6 * i,
+        );
+      }
+
+      await testWeatherService.setForecastMessage(testWeather);
+      expect(testWeather.summary().headsUp).toBe(HeadsUpType[4]);
+    });
+
+    it('앞으로 48 시간내에 눈이 내릴 것으로 예측되는 경우가 6시간 이하 => 날씨는 대체로 평온할 예정이에요.', async () => {
+      testWeatherInfoService.setTestForecastInfo(
+        WeatherCode.snow,
+        testMinTemperature,
+        testMaxTemperature,
+        testRainPercentage,
+        6,
+      );
+
+      for (let i = 2; i <= 8; i++) {
+        testWeatherInfoService.setTestForecastInfo(
+          WeatherCode.cloudy,
+          testMinTemperature,
+          testMaxTemperature,
+          testRainPercentage,
+          6 * i,
+        );
+      }
+
+      await testWeatherService.setForecastMessage(testWeather);
+      expect(testWeather.summary().headsUp).toBe(HeadsUpType[4]);
+    });
   });
 });

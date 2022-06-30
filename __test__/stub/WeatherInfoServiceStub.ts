@@ -14,9 +14,7 @@ export class WeatherInfoServiceStub extends WeatherInfoService {
   private historicalCode: WeatherCode;
   private historicalTemp: number;
   private historicalRain1h: number;
-  private minTemp: number;
-  private maxTemp: number;
-  private rainPercentage: number;
+  private forecastInfo: Map<number, ForecastApiResponse> = new Map();
 
   constructor(httpService: HttpService) {
     super(httpService);
@@ -43,11 +41,15 @@ export class WeatherInfoServiceStub extends WeatherInfoService {
     minTemp: number,
     maxTemp: number,
     rainPercentage: number,
+    hourOffset: number,
   ): void {
-    this.code = code;
-    this.minTemp = minTemp;
-    this.maxTemp = maxTemp;
-    this.rainPercentage = rainPercentage;
+    this.forecastInfo.set(hourOffset, {
+      timestamp: new Date().getTime() + 60 * 60 * 1000 * hourOffset,
+      code: code,
+      min_temp: minTemp,
+      max_temp: maxTemp,
+      rain: rainPercentage,
+    });
   }
 
   async getCurrentWeather(_weather: Weather): Promise<WeatherApiResponse> {
@@ -73,14 +75,8 @@ export class WeatherInfoServiceStub extends WeatherInfoService {
 
   async getForecastWeather(
     _weather: Weather,
-    _hourOffset: number,
+    hourOffset: number,
   ): Promise<ForecastApiResponse> {
-    return {
-      timestamp: new Date().getTime(),
-      code: this.code,
-      min_temp: this.minTemp,
-      max_temp: this.maxTemp,
-      rain: this.rainPercentage,
-    };
+    return this.forecastInfo.get(hourOffset);
   }
 }
