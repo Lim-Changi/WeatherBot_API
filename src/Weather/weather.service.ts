@@ -49,6 +49,70 @@ export class WeatherService {
     weather.setGreetingMessage(currentWeatherMessage);
   }
 
+  private setTemperatureMessage(
+    currentWeather: WeatherApiResponse,
+    historicalWeatherInfo: WeatherApiResponse[],
+    days: number,
+    weather: Weather,
+  ): void {
+    // 기획
+    let temperatureCompareMessage: string = null;
+    const lastDayTemperatureInfo = historicalWeatherInfo[4 * days];
+    const temperatureDifference =
+      currentWeather.temp - lastDayTemperatureInfo.temp;
+
+    if (temperatureDifference < 0) {
+      // 현재 온도가 낮아짐
+      if (currentWeather.temp >= 15) {
+        temperatureCompareMessage = this.parseTemperatureMessage(
+          TemperatureType[0],
+          temperatureDifference,
+        );
+      } else {
+        temperatureCompareMessage = this.parseTemperatureMessage(
+          TemperatureType[3],
+          temperatureDifference,
+        );
+      }
+    } else if (temperatureDifference > 0) {
+      // 현재 온도가 높아짐
+      if (currentWeather.temp >= 15) {
+        temperatureCompareMessage = this.parseTemperatureMessage(
+          TemperatureType[1],
+          temperatureDifference,
+        );
+      } else {
+        temperatureCompareMessage = this.parseTemperatureMessage(
+          TemperatureType[2],
+          temperatureDifference,
+        );
+      }
+    } else {
+      // 온도가 같음
+      if (currentWeather.temp >= 15) {
+        temperatureCompareMessage = TemperatureType[4];
+      } else {
+        temperatureCompareMessage = TemperatureType[5];
+      }
+    }
+
+    const temperatureData = historicalWeatherInfo.map((weather) => {
+      return weather.temp;
+    });
+    const maxTemperatureMessage = this.parseTemperatureMessage(
+      TemperatureType[6],
+      Math.max(...temperatureData),
+    );
+    const minTemperatureMessage = this.parseTemperatureMessage(
+      TemperatureType[7],
+      Math.min(...temperatureData),
+    );
+    const temperatureMessage =
+      temperatureCompareMessage + maxTemperatureMessage + minTemperatureMessage;
+
+    weather.setTemperatureMessage(temperatureMessage);
+  }
+
   async setWeatherMessage(weather: Weather, days = 1): Promise<void> {
     try {
       const historicalWeather = [
@@ -69,70 +133,18 @@ export class WeatherService {
         historicalWeather,
       );
 
-      console.log(historicalWeatherInfo);
-      // 기획
-      let temperatureCompareMessage: string = null;
       const currentWeather = historicalWeatherInfo[0];
-      const lastDayTemperatureInfo = historicalWeatherInfo[4 * days];
-      const temperatureDifference =
-        currentWeather.temp - lastDayTemperatureInfo.temp;
 
       // Greeting Message
       this.setGreetingMessage(currentWeather, weather);
 
       // Temperature Message
-      if (temperatureDifference < 0) {
-        // 현재 온도가 낮아짐
-        if (currentWeather.temp >= 15) {
-          temperatureCompareMessage = this.parseTemperatureMessage(
-            TemperatureType[0],
-            temperatureDifference,
-          );
-        } else {
-          temperatureCompareMessage = this.parseTemperatureMessage(
-            TemperatureType[3],
-            temperatureDifference,
-          );
-        }
-      } else if (temperatureDifference > 0) {
-        // 현재 온도가 높아짐
-        if (currentWeather.temp >= 15) {
-          temperatureCompareMessage = this.parseTemperatureMessage(
-            TemperatureType[1],
-            temperatureDifference,
-          );
-        } else {
-          temperatureCompareMessage = this.parseTemperatureMessage(
-            TemperatureType[2],
-            temperatureDifference,
-          );
-        }
-      } else {
-        // 온도가 같음
-        if (currentWeather.temp >= 15) {
-          temperatureCompareMessage = TemperatureType[4];
-        } else {
-          temperatureCompareMessage = TemperatureType[5];
-        }
-      }
-
-      const temperatureData = historicalWeatherInfo.map((weather) => {
-        return weather.temp;
-      });
-      const maxTemperatureMessage = this.parseTemperatureMessage(
-        TemperatureType[6],
-        Math.max(...temperatureData),
+      this.setTemperatureMessage(
+        currentWeather,
+        historicalWeatherInfo,
+        days,
+        weather,
       );
-      const minTemperatureMessage = this.parseTemperatureMessage(
-        TemperatureType[7],
-        Math.min(...temperatureData),
-      );
-      const temperatureMessage =
-        temperatureCompareMessage +
-        maxTemperatureMessage +
-        minTemperatureMessage;
-
-      weather.setTemperatureMessage(temperatureMessage);
     } catch (e) {
       throw e;
     }
