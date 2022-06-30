@@ -1,0 +1,32 @@
+name: Integration Test
+on:
+  pull_request:
+    branches:
+      - main
+      
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    container: node:16-alpine
+    env:
+      NODE_ENV: ${{ secrets.NODE_ENV }}
+      PORT: ${{ secrets.PORT }}
+      WEATHER_API_HOST: ${{ secrets.WEATHER_API_HOST }}
+      CURRENT_ENDPOINT: ${{ secrets.CURRENT_ENDPOINT }}
+      FORECAST_ENDPOINT: ${{ secrets.FORECAST_ENDPOINT }}
+      HISTORICAL_ENDPOINT: ${{ secrets.HISTORICAL_ENDPOINT }}
+      API_KEY: ${{ secrets.API_KEY }}
+      REQUEST_TIMEOUT_LIMIT: ${{ secrets.REQUEST_TIMEOUT_LIMIT }}
+      
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@master
+
+      - name: Setup Node Environment
+        run: npm ci
+      
+      - name: Test with DB
+        run: npx jest --detectOpenHandles --forceExit
+
+      - name: Success
+        run: echo Test Completed Successfully.
