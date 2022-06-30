@@ -30,4 +30,9 @@ export class ConfigService {
 
     return { CURRENT_URL, FORECAST_URL, HISTORICAL_URL };
   }
+
+  static timeout(): number {
+    const { REQUEST_TIMEOUT_LIMIT } = process.env;
+    return REQUEST_TIMEOUT_LIMIT ? Number(REQUEST_TIMEOUT_LIMIT) : 1500;
+  }
 }

@@ -4,6 +4,7 @@ import {
   ExceptionFilter,
   HttpException,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { instanceToPlain } from 'class-transformer';
@@ -11,8 +12,14 @@ import { ValidationError } from 'class-validator';
 import { CustomValidationError } from './CustomValidationError';
 import { ResponseEntity } from '../response/ResponseEntity';
 
-@Catch()
+@Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger: Logger;
+
+  constructor() {
+    this.logger = new Logger('HttpExceptionFilter');
+  }
+
   catch(exception: HttpException, host: ArgumentsHost): any {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -25,21 +32,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const responseBody = (exception as HttpException).getResponse();
     const isValidationError = responseBody instanceof ValidationError;
 
-    return response
-      .status(status)
-      .json(
-        instanceToPlain(
-          ResponseEntity.ERROR_WITH_DATA<CustomValidationError[]>(
-            responseBody['error'] === undefined
-              ? responseBody['message']
-              : responseBody['error'],
-            status,
-            isValidationError
-              ? [this.toCustomValidationErrorByNest(responseBody)]
-              : (responseBody['message'] as CustomValidationError[]),
-          ),
-        ),
-      );
+    const errorData = instanceToPlain(
+      ResponseEntity.ERROR_WITH_DATA<CustomValidationError[]>(
+        responseBody['error'] === undefined
+          ? responseBody['message']
+          : responseBody['error'],
+        status,
+        isValidationError
+          ? [this.toCustomValidationErrorByNest(responseBody)]
+          : (responseBody['message'] as CustomValidationError[]),
+      ),
+    );
+
+    this.logger.error(errorData);
+
+    return response.status(status).json(errorData);
   }
 
   toCustomValidationErrorByNest(

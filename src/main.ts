@@ -1,4 +1,4 @@
-import { ConfigService } from 'libs/entity/config/configService';
+import { ConfigService } from '@app/entity/config/configService';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';

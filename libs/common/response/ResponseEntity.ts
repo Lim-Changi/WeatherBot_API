@@ -13,6 +13,10 @@ export class ResponseEntity<T> {
     this._data = data;
   }
 
+  static ONLY_DATA<T>(data: T): T {
+    return data;
+  }
+
   static OK(): ResponseEntity<string> {
     return new ResponseEntity<string>(HttpStatus.OK, '', '');
   }
